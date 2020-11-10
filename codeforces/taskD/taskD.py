@@ -2,8 +2,8 @@ import random
 import math
 
 loss_function_name = 'linear'
-mu = 0.5
-a = 0.5
+mu = 0.01
+a = 1 / 10
 
 ##
 
@@ -41,19 +41,23 @@ def solve(X, Y):
     w = getInitialValue(m)
     # w = [0] * m
     # Q = sum([loss_function(dotProduct(w, X[i]) * Y[i]) for i in range(n)])
-    Q = sum([loss_function(dotProduct(w, X[i]) * Y[i]) for i in range(n)])
+    # Q = sum([(dotProduct(w, X[i]) - Y[i]) ** 2 for i in range(n)])
+    Q = sum([(dotProduct(w, X[i]) - Y[i]) ** 2 for i in range(n)])
     Qold = math.inf
 
     cyc = 0
     # while cyc < 10000:
-    while abs(Q - Qold) >= 0.00001 and cyc < 10000:
+    while abs(Q - Qold) >= 0.00001 and cyc < 100:
         cyc += 1
         Qold = Q
         i = int(random.random() * n)
-        e = loss_function(dotProduct(w, X[i]) * Y[i])
-        coeff = mu * loss_function_derivative(dotProduct(w, X[i]) * Y[i]) * Y[i]
+        e = (dotProduct(w, X[i]) - Y[i]) ** 2
+        prodd = dotProduct(w, X[i]) - Y[i]
+        coeff = 1 / (cyc + 2) * (dotProduct(w, X[i]) - Y[i])
         for j in range(m):
-            w[j] -= coeff * X[i][j]
+            #der = prodd * 2 * X[i][j]
+            der = (2 * w[j] * w[j] * X[i][j] + w[j] * (prodd - w[j] * X[i][j]))
+            w[j] = w[j] - (1 / cyc) * der
         Q = (1 - a) * Q + a * e
 
     print(Q, cyc)
@@ -74,6 +78,7 @@ def main():
     sol = solve(X, Y)
 
     print(' '.join(map(str, sol)))
+
 
 if __name__ == "__main__":
     main()
