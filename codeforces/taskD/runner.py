@@ -62,7 +62,22 @@ def runFile(path):
     print('smpS', smpS)
     print('score', score)
 
+    return score
+
 
 allFiles = getFilesFromDir(trainsPath)
 
-runFile(allFiles[0])
+
+def runAll():
+    totalScore = 0
+
+    for file in allFiles:
+        print(file)
+        currentScore = runFile(file) * 100
+        totalScore += min(max(currentScore, 0), 100)
+
+    print('\ntotalScore', totalScore / len(allFiles) * 10)
+
+
+# runFile(allFiles[6])
+runAll()
