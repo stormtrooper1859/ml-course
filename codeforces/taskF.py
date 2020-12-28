@@ -7,9 +7,6 @@ n = int(input())
 
 class_count = [0] * k
 mWordClass = dict()
-mClassWords = [set()] * k
-for i in range(k):
-    mClassWords[i] = set()
 
 for i in range(n):
     s = input().split()
@@ -21,7 +18,6 @@ for i in range(n):
         if mWordClass.get(w) is None:
             mWordClass[w] = [0] * k
         mWordClass[w][c] += 1
-        mClassWords[c].add(w)
 
 
 m = int(input())
@@ -52,6 +48,9 @@ for _cyc in range(m):
                 if mWordClass.get(w) is not None:
                     st = mWordClass[w]
                     cr[i] += math.log(1 - (st[i] + a) / (class_count[i] + 2 * a))
+
+    mx = max(cr)
+    cr = list(map(lambda x: x - mx, cr))
 
     for i in range(k):
         if class_count[i] != 0:
