@@ -22,32 +22,32 @@ for i in range(n):
 
 m = int(input())
 
+precalc = [0.0] * k
+
+for i in range(k):
+    if class_count[i] != 0:
+        precalc[i] = math.log(1.0 * class_count[i] * lam[i] / n)
+
+for w in set(mWordClass.keys()):
+    st = mWordClass[w]
+    for i in range(k):
+        if class_count[i] != 0:
+            precalc[i] += math.log(1 - (st[i] + a) / (class_count[i] + 2 * a))
+
 for _cyc in range(m):
     s = input().split()
     l = int(s[0])
     ws = set(s[1:])
 
-    cr = [0.0] * k
-
-    for i in range(k):
-        if class_count[i] != 0:
-            cr[i] = math.log(1.0 * class_count[i] * lam[i] / n)
-
-    ni_set = set(mWordClass.keys()) - ws
+    cr = precalc.copy()
 
     for w in ws:
         for i in range(k):
             if class_count[i] != 0:
                 if mWordClass.get(w) is not None:
                     st = mWordClass[w]
-                    cr[i] += math.log((st[i] + a) / (class_count[i] + 2 * a))
-
-    for w in ni_set:
-        for i in range(k):
-            if class_count[i] != 0:
-                if mWordClass.get(w) is not None:
-                    st = mWordClass[w]
-                    cr[i] += math.log(1 - (st[i] + a) / (class_count[i] + 2 * a))
+                    pr = (st[i] + a) / (class_count[i] + 2 * a)
+                    cr[i] += math.log(pr) - math.log(1 - pr)
 
     mx = max(cr)
     cr = list(map(lambda x: x - mx, cr))
